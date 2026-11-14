@@ -1,11 +1,12 @@
 ---
 /**
- * Janela de produto. Usa o vídeo gravado quando existe; senão, uma tela animada
- * com dados fictícios no formato do produto.
+ * Janela de produto. Toca a gravação do produto quando existe (WebM, com MP4 de reserva);
+ * senão, mostra uma tela animada com dados fictícios no formato do produto.
  */
 interface Props {
   tipo: 'barras' | 'gabarito' | 'heatmap' | 'lista';
   rotulo: string;
+  /** Caminho base do vídeo, sem extensão (ex.: /videos/meu-case). */
   video?: string;
   grande?: boolean;
 }
@@ -22,10 +23,13 @@ const alunos = [
   { nome: 'Aluno 1104', nivel: 'md', rotulo: 'médio' },
 ];
 ---
-<div class:list={['screen', { 'screen-lg': grande }]}>
+<div class:list={['screen', { 'screen-lg': grande && !video, 'com-video': !!video }]}>
   <div class="bar"><i></i><i></i><i></i><span>{rotulo}</span></div>
   {video ? (
-    <video src={video} autoplay muted loop playsinline preload="none" aria-label={`Gravação do produto ${rotulo}, com dados fictícios`}></video>
+    <video muted loop playsinline preload="none" data-poster={`${video}.jpg`} width="1280" height="800" data-video-produto aria-label={`Gravação do produto ${rotulo}, com dados fictícios`}>
+      <source src={`${video}.webm`} type="video/webm" />
+      <source src={`${video}.mp4`} type="video/mp4" />
+    </video>
   ) : (
     <>
       <span class="rec" aria-hidden="true">REC</span>
@@ -72,3 +76,30 @@ const alunos = [
     </>
   )}
 </div>
+
+<script>
+  // Pôster e vídeo só carregam perto da tela: o pôster um pouco antes, o vídeo quando aparece.
+  // Com movimento reduzido, fica só o pôster.
+  const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-video-produto]');
+  const porPoster = (v: HTMLVideoElement) => { if (!v.poster && v.dataset.poster) v.poster = v.dataset.poster; };
+  if (!('IntersectionObserver' in window)) videos.forEach(porPoster);
+  else if (videos.length) {
+    const perto = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { porPoster(e.target as HTMLVideoElement); perto.unobserve(e.target); }
+    }), { rootMargin: '600px 0px' });
+    videos.forEach((v) => perto.observe(v));
+    if (!reduz) {
+      const tela = new IntersectionObserver((es) => {
+        for (const e of es) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) {
+            if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
+            v.play().catch(() => {});
+          } else v.pause();
+        }
+      }, { rootMargin: '120px 0px', threshold: 0.2 });
+      videos.forEach((v) => tela.observe(v));
+    }
+  }
+</script>

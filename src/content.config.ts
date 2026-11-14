@@ -13,8 +13,9 @@ const cases = defineCollection({
     stack: z.array(z.string()),
     /** Tela animada usada enquanto não há vídeo gravado do produto. */
     tela: z.enum(['barras', 'gabarito', 'heatmap', 'lista']),
-    /** Gravação do produto com dados fictícios (MP4/WebM em /public/videos). */
-    video: z.string().optional(),
+    /** Gravação do produto com dados fictícios: caminho base em /public/videos, sem extensão
+     *  (ex.: /videos/meu-case → meu-case.webm, meu-case.mp4 e meu-case.jpg). */
+    video: z.string().regex(/^\/videos\/[a-z0-9-]+$/).optional(),
     fluxo: z.tuple([z.string(), z.string(), z.string()]),
     numeros: z.array(z.object({ valor: z.string(), rotulo: z.string() })).min(2).max(4),
     licao: z.string(),

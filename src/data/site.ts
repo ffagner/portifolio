@@ -36,7 +36,7 @@ export const heroSets = [
     chip: 'Avaliações',
     pergunta: 'Quanto tempo do envio até o relatório?',
     cards: [
-      { k: 'Gabarito', v: 'A–E', vivo: false },
+      { k: 'Gabarito', v: 'A–D + X', vivo: false },
       { k: 'Relatório', v: '~1 s', vivo: true },
       { k: 'Questões/caderno', v: '12–26', vivo: false },
       { k: 'Componentes', v: 'LP · MT', vivo: false },
