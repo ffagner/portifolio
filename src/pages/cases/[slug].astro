@@ -1,0 +1,129 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Tela from '../../components/Tela.astro';
+import { projetos } from '../../data/projetos';
+
+export async function getStaticPaths() {
+  const cases = (await getCollection('cases')).sort((a, b) => a.data.ordem - b.data.ordem);
+  return cases.map((c, i) => ({
+    params: { slug: c.id },
+    props: { caso: c, proximo: cases[(i + 1) % cases.length]! },
+  }));
+}
+
+const { caso, proximo } = Astro.props;
+const { Content } = await render(caso);
+const d = caso.data;
+const repos = d.repos.map((nome) => ({ nome, publico: projetos.find((p) => p.nome === nome)?.publico ?? false }));
+---
+<Base titulo={d.titulo} descricao={d.resumo}>
+  <article>
+    <header class="topo">
+      <div class="wrap">
+        <a class="voltar mono" href="/#cases">← Todos os cases</a>
+        <div class="cabeca">
+          <span class="eyebrow">Case {String(d.ordem).padStart(2, '0')} · {d.status}</span>
+          <h1 class="h-xl">{d.titulo}</h1>
+          <p class="lede resumo">{d.resumo}</p>
+        </div>
+        <dl class="numeros">
+          {d.numeros.map((n) => <div><dt>{n.rotulo}</dt><dd>{n.valor}</dd></div>)}
+        </dl>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="vitrine">
+        <Tela tipo={d.tela} rotulo={d.repos.join(' · ')} video={d.video} grande />
+        <div class="fluxo mono" aria-label="Fluxo do produto">
+          <span>{d.fluxo[0]}</span><i></i><span>{d.fluxo[1]}</span><i></i><span class="fim">{d.fluxo[2]}</span>
+        </div>
+        {!d.video && <p class="aviso">Tela animada com dados fictícios. A gravação do produto entra aqui.</p>}
+      </div>
+
+      <div class="corpo">
+        <div class="prose-case">
+          <Content />
+        </div>
+        <aside class="lado">
+          <div class="bloco">
+            <span class="mono dim">Stack</span>
+            <div class="tags">{d.stack.map((s) => <span class="tag">{s}</span>)}</div>
+          </div>
+          <div class="bloco">
+            <span class="mono dim">Repositórios</span>
+            <ul class="repos">
+              {repos.map((r) => (
+                <li>
+                  {r.publico
+                    ? <a href={`https://github.com/ffagner/${r.nome}`} target="_blank" rel="noopener">{r.nome} ↗</a>
+                    : <span>{r.nome}</span>}
+                  <small>{r.publico ? 'público' : 'privado'}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {d.papel && d.papel.length > 0 && (
+            <div class="bloco">
+              <span class="mono dim">Meu papel</span>
+              <ul class="papel">{d.papel.map((p) => <li>{p}</li>)}</ul>
+            </div>
+          )}
+          <div class="bloco licao">
+            <span class="mono">Lição registrada</span>
+            <p>{d.licao}</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <nav class="proximo" aria-label="Próximo case">
+      <div class="wrap">
+        <span class="mono dim">Próximo case</span>
+        <a href={`/cases/${proximo.id}/`}>
+          <span class="h-l">{proximo.data.titulo}</span>
+          <span class="arr" aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn-lime" href="/#contato">Quero algo assim <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .topo { position: relative; overflow: hidden; padding-block: 40px 56px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 20% 0%, rgb(190 240 90 / .12), transparent 55%); }
+  .topo::after { content: ""; position: absolute; inset: auto 0 0; height: 140px; z-index: -1; background-image: radial-gradient(circle, rgb(158 166 146 / .35) 1px, transparent 1.5px); background-size: 14px 14px; mask-image: linear-gradient(to top, #000, transparent); }
+  .voltar { color: var(--color-fg-dim); text-decoration: none; }
+  .voltar:hover { color: var(--color-lime); }
+  .cabeca { margin-top: 48px; max-width: 900px; }
+  .cabeca h1 { margin-top: 16px; }
+  .resumo { margin-top: 20px; max-width: 62ch; font-size: 19px; }
+  .numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 48px 0 0; border-top: 1px solid var(--line); padding-top: 20px; }
+  .numeros dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-dim); order: 2; }
+  .numeros div { display: flex; flex-direction: column; gap: 4px; }
+  .numeros dd { margin: 0; font-size: clamp(32px, 4vw, 48px); letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--color-lime); order: 1; }
+  .vitrine { margin-top: 48px; }
+  .fluxo { display: flex; align-items: center; gap: 12px; margin-top: 16px; color: var(--color-fg-dim); flex-wrap: wrap; }
+  .fluxo i { flex: 1; min-width: 20px; height: 1px; background: var(--line-2); }
+  .fluxo .fim { color: var(--color-lime); }
+  .aviso { margin-top: 10px; font-size: 13px; color: var(--color-fg-faint); }
+  .corpo { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 56px; padding-block: 24px 96px; align-items: start; }
+  .lado { position: sticky; top: calc(88px + env(safe-area-inset-top, 0px)); display: grid; gap: 16px; margin-top: 56px; }
+  .bloco { border: 1px solid var(--line); border-radius: 16px; padding: 16px; background: var(--color-ink-1); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .repos, .papel { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+  .repos li { display: flex; justify-content: space-between; gap: 10px; }
+  .repos a { color: var(--color-fg); }
+  .repos a:hover { color: var(--color-lime); }
+  .repos small { font-family: var(--font-mono); font-size: 10.5px; color: var(--color-fg-faint); }
+  .licao { border-color: rgb(205 245 100 / .35); }
+  .licao .mono { color: var(--color-lime); }
+  .licao p { margin-top: 8px; font-size: 15px; }
+  .proximo { border-top: 1px solid var(--line); padding-block: 56px 72px; }
+  .proximo .wrap { display: grid; gap: 14px; justify-items: start; }
+  .proximo a:not(.btn) { display: inline-flex; align-items: center; gap: 18px; text-decoration: none; color: var(--color-fg); }
+  .proximo a:not(.btn):hover { color: var(--color-lime); }
+  .proximo .arr { font-size: 32px; }
+  @media (max-width: 900px) { .corpo { grid-template-columns: 1fr; gap: 0; } .lado { position: static; margin-top: 24px; } }
+</style>

@@ -1,0 +1,93 @@
+---
+import { projetos, type Categoria } from '../data/projetos';
+import { site } from '../data/site';
+const categorias: ('Todos' | Categoria)[] = ['Todos', 'Dados', 'Produto', 'Automação'];
+const conta = (c: string) => (c === 'Todos' ? projetos.length : projetos.filter((p) => p.categoria === c).length);
+const barras = (i: number) => Array.from({ length: 16 }, (_, j) => ({ h: Math.round(15 + Math.abs(Math.sin(j * 1.9 + i * 7)) * 85), viva: (j + i) % 5 === 0 }));
+---
+<section class="sec lib" id="projetos" aria-labelledby="lib-h" data-lib>
+  <div class="wrap">
+    <div class="sec-head rv" style="margin-bottom:24px">
+      <span class="eyebrow">Projetos</span>
+      <h2 class="h-l" id="lib-h">Cada projeto<br /><span class="dim">ensina o próximo.</span></h2>
+      <div class="filtros" role="group" aria-label="Filtrar projetos">
+        {categorias.map((c, i) => <button class="chip" type="button" data-cat={c} aria-pressed={i === 0 ? 'true' : 'false'}>{c}<em>{conta(c)}</em></button>)}
+      </div>
+    </div>
+  </div>
+  <div class="palco" data-palco>
+    <canvas class="nucleo" width="300" height="300" aria-hidden="true" data-nucleo></canvas>
+    <ul class="helice" data-helice>
+      {projetos.map((p, i) => (
+        <li>
+          <button class="hcard" type="button" data-i={i} data-cat={p.categoria} aria-label={`${p.nome}, ${p.categoria}`}>
+            <span class="topo"><span>{String(i + 1).padStart(2, '0')} · {p.categoria}</span><b>{p.caso ? 'case' : p.publico ? 'público' : 'privado'}</b></span>
+            <strong>{p.nome}</strong>
+            <span class="viz" aria-hidden="true">{barras(i).map((b) => <i class:list={{ v: b.viva }} style={`height:${b.h}%`}></i>)}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="wrap">
+    <div class="rodape-lib">
+      <p class="h-m" style="max-width:16ch">Do primeiro script ao SaaS multi-tenant.</p>
+      <a class="mono todos" href={site.github} target="_blank" rel="noopener">Todos os repositórios no GitHub ↗</a>
+    </div>
+  </div>
+
+  <dialog class="folha" data-folha aria-labelledby="folha-t">
+    <div class="folha-topo">
+      <span class="selo" data-f="cat"></span>
+      <span class="mono dim" data-f="vis"></span>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar">✕</button>
+    </div>
+    <h3 id="folha-t" data-f="nome"></h3>
+    <p class="dim" data-f="desc"></p>
+    <div class="folha-ctas">
+      <a class="btn btn-lime" data-f="link" href="#" target="_blank" rel="noopener">Ver no GitHub <span class="arr" aria-hidden="true">↗</span></a>
+      <a class="btn btn-lime" data-f="caso" href="#">Ver o case <span class="arr" aria-hidden="true">→</span></a>
+      <button class="btn btn-glass" type="button" data-fechar>Fechar</button>
+    </div>
+  </dialog>
+  <script type="application/json" data-lib-dados set:html={JSON.stringify(projetos)}></script>
+</section>
+
+<script>
+  import { iniciarBiblioteca } from '../scripts/biblioteca';
+  iniciarBiblioteca();
+</script>
+
+<style>
+  .lib { overflow: hidden; background: radial-gradient(ellipse at 50% 55%, rgb(150 210 60 / .16), transparent 55%), var(--color-ink-0); }
+  .filtros { display: flex; gap: 6px; flex-wrap: wrap; padding: 4px; border-radius: 999px; background: var(--color-ink-2); border: 1px solid var(--line); width: max-content; max-width: 100%; }
+  .filtros .chip { height: 30px; border: 0; background: transparent; }
+  .filtros .chip[aria-pressed="true"] { background: var(--color-fg); }
+  .filtros em { font-style: normal; color: var(--color-lime-2); margin-left: 4px; }
+  .filtros .chip[aria-pressed="true"] em { color: #5f7d10; }
+  .palco { position: relative; height: 600px; perspective: 1100px; margin-top: 8px; touch-action: pan-y; }
+  .nucleo { position: absolute; left: 50%; top: 50%; width: 150px; height: 150px; transform: translate(-50%, -50%); pointer-events: none; }
+  .helice { position: absolute; left: 50%; top: 50%; margin: 0; padding: 0; list-style: none; transform-style: preserve-3d; will-change: transform; }
+  .helice li { position: absolute; left: -115px; top: -74px; transform-style: preserve-3d; }
+  .hcard { position: relative; display: block; width: 230px; height: 148px; border-radius: 12px; padding: 10px; background: linear-gradient(165deg, #22261b, #14160f); border: 1px solid var(--line-2); cursor: pointer; text-align: left; color: var(--color-fg); box-shadow: 0 20px 40px -24px #000; transition: opacity .4s, filter .4s, border-color .2s; }
+  .hcard:hover, .hcard:focus-visible { border-color: var(--color-lime); }
+  .hcard.off { opacity: .08 !important; filter: grayscale(1); pointer-events: none; }
+  .topo { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 9.5px; color: var(--color-fg-faint); letter-spacing: .06em; text-transform: uppercase; }
+  .topo b { font-weight: 400; color: var(--color-lime); }
+  .hcard strong { display: block; font-weight: 400; font-size: 14px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .viz { position: absolute; left: 10px; right: 10px; bottom: 10px; height: 56px; display: flex; align-items: flex-end; gap: 3px; }
+  .viz i { flex: 1; background: var(--color-ink-3); border-radius: 2px; }
+  .viz i.v { background: var(--color-lime-2); }
+  .rodape-lib { display: flex; justify-content: space-between; gap: 16px; align-items: end; flex-wrap: wrap; margin-top: 24px; position: relative; z-index: 2; }
+  .todos { color: var(--color-fg-dim); text-decoration: none; }
+  .todos:hover { color: var(--color-lime); }
+  .folha { width: min(480px, calc(100% - 32px)); border-radius: 22px; padding: 18px; background: linear-gradient(165deg, rgb(46 50 38 / .97), rgb(20 22 16 / .98)); border: 1px solid var(--line-2); color: var(--color-fg); box-shadow: 0 40px 100px -30px #000; }
+  .folha::backdrop { background: rgb(8 9 6 / .6); backdrop-filter: blur(10px); }
+  .folha-topo { display: flex; align-items: center; gap: 10px; }
+  .selo { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; background: var(--color-lime); color: var(--color-ink-0); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+  .fechar { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: rgb(255 255 255 / .05); cursor: pointer; }
+  .folha h3 { font-size: 28px; margin-top: 18px; word-break: break-word; }
+  .folha p { margin-top: 10px; font-size: 15px; }
+  .folha-ctas { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  @media (max-width: 760px) { .palco { height: 520px; } }
+</style>

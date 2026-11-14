@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import Tela from './Tela.astro';
+const cases = (await getCollection('cases')).sort((a, b) => a.data.ordem - b.data.ordem);
+---
+<section class="sec" id="cases" aria-labelledby="cases-h">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Cases</span>
+      <h2 class="h-l" id="cases-h">Quatro problemas reais,<br /><span class="dim">quatro produtos.</span></h2>
+      <p>Telas com dados fictícios. Cada case conta o problema, a decisão que mudou o jogo e o que a rede ganhou.</p>
+    </div>
+    <div class="grade" data-cases>
+      {cases.map((c) => (
+        <a class="case rv" href={`/cases/${c.id}/`}>
+          <span class="brilho" aria-hidden="true"></span>
+          <div class="tela"><Tela tipo={c.data.tela} rotulo={c.data.repos.join(' · ')} video={c.data.video} /></div>
+          <div class="meta">
+            <span class="mono">Case {String(c.data.ordem).padStart(2, '0')} · {c.data.status}</span>
+            <h3>{c.data.titulo}</h3>
+            <span class="ir" aria-hidden="true">↗</span>
+            <p>{c.data.chamada}</p>
+            <div class="stack">{c.data.stack.slice(0, 5).map((s) => <span class="tag">{s}</span>)}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Inclinação 3D leve nos cards, só com mouse e sem movimento reduzido.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-cases] .case').forEach((b) => {
+      b.addEventListener('pointermove', (e) => {
+        const r = b.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        b.style.transform = `rotateX(${(0.5 - y) * 7}deg) rotateY(${(x - 0.5) * 9}deg)`;
+        b.style.setProperty('--mx', `${x * 100}%`);
+        b.style.setProperty('--my', `${y * 100}%`);
+      });
+      b.addEventListener('pointerleave', () => (b.style.transform = ''));
+    });
+  }
+</script>
+
+<style>
+  .grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; perspective: 1400px; }
+  .case { position: relative; display: block; border-radius: 20px; background: linear-gradient(170deg, var(--color-ink-2), var(--color-ink-1)); border: 1px solid var(--line); padding: 14px; text-decoration: none; color: inherit; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .7, .2, 1), border-color .3s; }
+  .case:hover { border-color: var(--line-2); }
+  .brilho { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 0%), rgb(205 245 100 / .1), transparent 50%); opacity: 0; transition: opacity .3s; }
+  .case:hover .brilho { opacity: 1; }
+  .tela { transform: translateZ(30px); }
+  .meta { padding: 18px 6px 6px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; transform: translateZ(18px); }
+  .meta .mono { color: var(--color-lime); grid-column: 1 / -1; }
+  .meta h3 { font-size: 26px; }
+  .meta p { grid-column: 1 / -1; color: var(--color-fg-dim); font-size: 14.5px; max-width: 52ch; }
+  .ir { align-self: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-2); display: grid; place-items: center; transition: background .2s, color .2s; }
+  .case:hover .ir { background: var(--color-lime); color: var(--color-ink-0); border-color: var(--color-lime); }
+  .stack { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  @media (max-width: 860px) { .grade { grid-template-columns: minmax(0, 1fr); } .tela :global(.screen) { height: 210px; } }
+  /* Sem mouse ou em tela estreita, sem profundidade: o translateZ ampliaria o card além da largura. */
+  @media (max-width: 860px), (hover: none) { .grade { perspective: none; } .tela, .meta { transform: none; } }
+</style>

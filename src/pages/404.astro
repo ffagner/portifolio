@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+const pontos = Array.from({ length: 140 }, (_, i) => ({
+  x: (i * 37) % 100,
+  y: (i * 53) % 100,
+  vivo: i % 23 === 0,
+}));
+---
+<Base titulo="Página não encontrada" descricao="Esta página não existe.">
+  <section class="erro">
+    <div class="campo" aria-hidden="true">
+      {pontos.map((p) => <i class:list={{ vivo: p.vivo }} style={`left:${p.x}%;top:${p.y}%`}></i>)}
+    </div>
+    <div class="wrap">
+      <span class="eyebrow">Erro 404</span>
+      <h1 class="h-xl">Este aluno<br /><span class="dim">não está na lista.</span></h1>
+      <p class="lede">A página que você procurou não existe ou mudou de endereço.</p>
+      <div class="ctas">
+        <a class="btn btn-lime" href="/">Voltar ao início <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-glass" href="/#cases">Ver os cases</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .erro { position: relative; overflow: hidden; padding-block: clamp(96px, 16vw, 200px); min-height: 70vh; }
+  .campo { position: absolute; inset: 0; z-index: -1; }
+  .campo i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: rgb(158 166 146 / .35); }
+  .campo i.vivo { width: 6px; height: 6px; background: var(--color-lime); box-shadow: 0 0 12px var(--color-lime); animation: pulse 2s infinite; }
+  h1 { margin-top: 18px; }
+  .lede { margin-top: 20px; }
+  .ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 32px; }
+</style>

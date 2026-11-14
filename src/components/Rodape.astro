@@ -1,0 +1,47 @@
+---
+import Marca from './Marca.astro';
+import { site } from '../data/site';
+const ano = new Date().getFullYear();
+---
+<footer class="rodape">
+  <div class="wrap">
+    <div class="grid-r">
+      <div>
+        <p class="nome">{site.nome}</p>
+        <p class="dim desc">Produtos para avaliação, frequência e gestão da educação pública.</p>
+      </div>
+      <div>
+        <h2>Site</h2>
+        <ul><li><a href="/#fluxo">Como funciona</a></li><li><a href="/#cases">Cases</a></li><li><a href="/#projetos">Projetos</a></li></ul>
+      </div>
+      <div>
+        <h2>Código</h2>
+        <ul><li><a href={site.github} target="_blank" rel="noopener">GitHub ↗</a></li><li><a href="/#stack">Stack</a></li></ul>
+      </div>
+      <div>
+        <h2>Contato</h2>
+        <ul>
+          <li><a href="/#contato">Mensagem</a></li>
+          {site.linkedin && <li><a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></li>}
+        </ul>
+      </div>
+    </div>
+    <div class="barra"><span>© {ano} {site.nome}</span><a href="#top">Voltar ao topo ↑</a></div>
+  </div>
+  <div class="marca-gigante" aria-hidden="true">ff<Marca size={0} completa={false} class="m" />agner</div>
+</footer>
+
+<style>
+  .rodape { position: relative; overflow: hidden; background: linear-gradient(to bottom, var(--color-ink-0) 0%, #1a2410 55%, #5f8a1c 85%, #a8d63c 100%); border-top: 1px solid var(--line); }
+  .grid-r { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 32px; padding-block: 72px 40px; }
+  .nome { font-size: 17px; }
+  .desc { margin-top: 6px; font-size: 14px; max-width: 32ch; }
+  h2 { margin: 0 0 14px; font-family: var(--font-mono); font-weight: 400; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-fg-faint); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14.5px; }
+  a { text-decoration: none; color: var(--color-fg); }
+  a:hover { color: var(--color-lime); }
+  .barra { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 18px; border-top: 1px solid rgb(255 255 255 / .08); font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: rgb(236 238 228 / .6); }
+  .marca-gigante { display: flex; align-items: flex-end; justify-content: center; gap: .03em; font-variant-ligatures: none; font-size: clamp(90px, 21vw, 320px); font-weight: 600; letter-spacing: -.06em; line-height: .74; color: rgb(243 242 234 / .82); user-select: none; padding-top: 10px; white-space: nowrap; margin-bottom: -.04em; }
+  .marca-gigante :global(.m) { width: .62em; height: .62em; flex: none; margin-bottom: .06em; }
+  @media (max-width: 760px) { .grid-r { grid-template-columns: 1fr 1fr; } .grid-r > div:first-child { grid-column: 1 / -1; } }
+</style>

@@ -1,0 +1,101 @@
+---
+import { heroSets, site, ticker } from '../data/site';
+const inicial = heroSets[0]!;
+const curva = (vivo: boolean) => {
+  let d = 'M0 16';
+  for (let i = 1; i <= 10; i++) d += ` L${i * 14} ${(16 - (vivo ? i * 1.2 : 0) + Math.sin(i * 1.7) * 3).toFixed(1)}`;
+  return d;
+};
+---
+<section class="hero" aria-labelledby="hero-h" data-hero>
+  <canvas class="campo" aria-hidden="true" data-campo></canvas>
+  <div class="campo-estatico" aria-hidden="true"></div>
+  <div class="sombra" aria-hidden="true"></div>
+  <div class="ancoras" aria-hidden="true" data-ancoras>
+    {inicial.cards.map((c, i) => (
+      <>
+        <div class:list={['haste', { 'm-ocultar': i === 0 || i === 3 }]} data-haste></div>
+        <div class:list={['mcard', { 'm-ocultar': i === 0 || i === 3 }]} data-mcard>
+          <div class="k">{c.k}</div>
+          <div class:list={['v', { vivo: c.vivo }]}>{c.v}</div>
+          <svg viewBox="0 0 140 22" preserveAspectRatio="none"><path d={curva(c.vivo)} fill="none" stroke={c.vivo ? '#cdf564' : '#8d9182'} stroke-width="1.5" /></svg>
+        </div>
+      </>
+    ))}
+  </div>
+  <div class="wrap conteudo">
+    <div class="pergunta" role="group" aria-label="Pergunta de exemplo">
+      <span class="tog" aria-hidden="true"></span>
+      <span class="pergunta-texto" data-pergunta>{inicial.pergunta}</span>
+      <a class="btn" href="#cases">Ver resposta</a>
+    </div>
+    <div class="chips" role="group" aria-label="Trocar visão">
+      {heroSets.map((s, i) => <button class="chip" type="button" data-set={i} aria-pressed={i === 0 ? 'true' : 'false'}>{s.chip}</button>)}
+    </div>
+    <div class="copia">
+      <div>
+        <span class="eyebrow">{site.papel}</span>
+        <h1 class="h-xl" id="hero-h">{site.tese[0]}<br /><span class="apagado">{site.tese[1]}</span></h1>
+        <div class="ctas">
+          <a class="btn btn-lime" href="#cases">Ver cases <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn-glass" href="#fluxo">Como eu trabalho</a>
+        </div>
+      </div>
+      <p class="nota">Cada ponto é um aluno. Os pontos em verde são <b>os que os meus sistemas já alcançam.</b></p>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-trilho">{[...ticker, ...ticker].map((w) => <span>{w}</span>)}</div>
+  </div>
+  <script type="application/json" data-hero-sets set:html={JSON.stringify(heroSets)}></script>
+</section>
+
+<script>
+  import { iniciarHero } from '../scripts/hero';
+  iniciarHero();
+</script>
+
+<style>
+  .hero { position: relative; overflow: hidden; min-height: 760px; border-bottom: 1px solid var(--line); isolation: isolate; }
+  .hero::before { content: ""; position: absolute; inset: -20% -10% auto; height: 70%; background: radial-gradient(ellipse at 50% 30%, rgb(190 240 90 / .13), transparent 60%); z-index: -1; }
+  .campo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  /* Plano de pontos estático: aparece sem WebGL ou com movimento reduzido. */
+  .campo-estatico { position: absolute; inset: 40% -10% 0; z-index: -2; background-image: radial-gradient(circle, rgb(158 166 146 / .45) 1px, transparent 1.5px); background-size: 14px 14px; transform: perspective(600px) rotateX(62deg); transform-origin: 50% 0; mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 70%, transparent); }
+  .hero.gl-ok .campo-estatico { display: none; }
+  .sombra { position: absolute; inset: auto 0 0; height: 55%; background: linear-gradient(to top, var(--color-ink-0) 18%, rgb(13 14 10 / .75) 55%, transparent); pointer-events: none; }
+  .conteudo { position: relative; z-index: 1; padding-block: 28px 40px; display: flex; flex-direction: column; min-height: 760px; }
+  .pergunta { align-self: center; display: flex; align-items: center; gap: 12px; width: min(560px, 100%); padding: 6px 6px 6px 8px; border-radius: 999px; background: rgb(28 31 22 / .72); border: 1px solid var(--line-2); backdrop-filter: blur(12px); box-shadow: 0 20px 50px -20px rgb(0 0 0 / .8); }
+  .tog { width: 34px; height: 22px; border-radius: 999px; background: var(--color-ink-3); position: relative; flex: none; }
+  .tog::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--color-lime); box-shadow: 0 0 10px var(--color-lime); }
+  .pergunta-texto { flex: 1; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pergunta-texto :global(.cursor) { display: inline-block; width: 7px; height: 15px; background: var(--color-lime); vertical-align: -2px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  .pergunta .btn { height: 36px; font-size: 13px; padding: 0 14px; background: var(--color-lime); color: var(--color-ink-0); }
+  .chips { align-self: center; display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .ancoras { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  .hero:not(.gl-ok) .ancoras { display: none; }
+  .mcard { position: absolute; left: 0; top: 0; width: 150px; padding: 10px 12px 12px; border-radius: 12px; background: linear-gradient(160deg, rgb(44 48 36 / .88), rgb(22 24 18 / .9)); border: 1px solid var(--line-2); box-shadow: 0 18px 40px -18px rgb(0 0 0 / .9), inset 0 1px 0 rgb(255 255 255 / .06); backdrop-filter: blur(8px); will-change: transform; transition: opacity .4s; }
+  .mcard .k { font-size: 11px; color: var(--color-fg-dim); }
+  .mcard .v { font-size: 24px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .mcard .v.vivo { color: var(--color-lime); }
+  .mcard svg { display: block; width: 100%; height: 22px; margin-top: 4px; }
+  .haste { position: absolute; left: 0; top: 0; width: 1px; background: linear-gradient(var(--line-2), rgb(205 245 100 / .6)); will-change: transform; }
+  .haste::after { content: ""; position: absolute; bottom: -4px; left: -3.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-lime); box-shadow: 0 0 12px var(--color-lime); }
+  .copia { margin-top: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+  h1 { margin-top: 18px; }
+  .apagado { color: #7d8172; }
+  .ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .nota { max-width: 30ch; color: var(--color-fg-dim); font-size: 14px; text-align: right; }
+  .nota b { color: var(--color-lime); font-weight: 400; }
+  .ticker { position: relative; z-index: 1; border-top: 1px solid var(--line); overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .ticker-trilho { display: flex; gap: 44px; width: max-content; padding: 16px 0; animation: tick 38s linear infinite; }
+  .ticker span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-fg-faint); display: inline-flex; align-items: center; gap: 44px; }
+  .ticker span::after { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--color-lime-2); }
+  @media (max-width: 760px) {
+    .hero, .conteudo { min-height: 700px; }
+    .copia { grid-template-columns: 1fr; }
+    .nota { text-align: left; }
+    .mcard { width: 126px; padding: 8px 10px 10px; }
+    .mcard .v { font-size: 19px; }
+    .m-ocultar { display: none; }
+  }
+</style>

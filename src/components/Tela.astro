@@ -1,0 +1,74 @@
+---
+/**
+ * Janela de produto. Usa o vídeo gravado quando existe; senão, uma tela animada
+ * com dados fictícios no formato do produto.
+ */
+interface Props {
+  tipo: 'barras' | 'gabarito' | 'heatmap' | 'lista';
+  rotulo: string;
+  video?: string;
+  grande?: boolean;
+}
+const { tipo, rotulo, video, grande = false } = Astro.props;
+const rnd = (i: number, s = 1) => (Math.abs(Math.sin(i * 91.7 + s * 13.1)) * 1000) % 1;
+const seed = rotulo.length;
+const barras = Array.from({ length: 14 }, (_, i) => 30 + rnd(i, seed) * 70);
+const questoes = Array.from({ length: 6 }, (_, q) => ({ n: q + 1, certa: Math.floor(rnd(q + 1, seed) * 5), errou: q === 3 }));
+const calor = Array.from({ length: 60 }, (_, i) => ({ o: 0.12 + rnd(i, seed) * 0.88, d: -rnd(i + 3, seed) * 5 }));
+const alunos = [
+  { nome: 'Aluno 0142', nivel: 'hi', rotulo: 'alto' },
+  { nome: 'Aluno 0387', nivel: 'md', rotulo: 'médio' },
+  { nome: 'Aluno 0921', nivel: 'ok', rotulo: 'ok' },
+  { nome: 'Aluno 1104', nivel: 'md', rotulo: 'médio' },
+];
+---
+<div class:list={['screen', { 'screen-lg': grande }]}>
+  <div class="bar"><i></i><i></i><i></i><span>{rotulo}</span></div>
+  {video ? (
+    <video src={video} autoplay muted loop playsinline preload="none" aria-label={`Gravação do produto ${rotulo}, com dados fictícios`}></video>
+  ) : (
+    <>
+      <span class="rec" aria-hidden="true">REC</span>
+      <div class="ui" aria-hidden="true">
+        {tipo === 'barras' && (
+          <>
+            <div class="mono dim">Proficiência LP · por escola</div>
+            <div class="ui-bars">{barras.map((h, i) => <i class={h > 78 ? 'hi' : ''} style={`height:${h}%;animation-delay:${i * -0.3}s`}></i>)}</div>
+            <div class="ui-row"><span>Escola A</span><span>Escola N</span></div>
+          </>
+        )}
+        {tipo === 'gabarito' && (
+          <>
+            <div class="ui-sheet">
+              <span></span>{['A', 'B', 'C', 'D', 'E'].map((x) => <b>{x}</b>)}
+              {questoes.map((q) => (
+                <>
+                  <span>{String(q.n).padStart(2, '0')}</span>
+                  {[0, 1, 2, 3, 4].map((o) => <i class={o === q.certa ? (q.errou ? 'bad' : 'on') : ''} style={`animation-delay:${q.n * 0.25}s`}></i>)}
+                </>
+              ))}
+            </div>
+            <div class="ui-row" style="margin-top:12px"><span>Turma 5º A</span><span style="color:var(--color-lime)">acertos 83%</span></div>
+          </>
+        )}
+        {tipo === 'heatmap' && (
+          <>
+            <div class="mono dim" style="margin-bottom:10px">Heatmap · escolas × habilidades</div>
+            <div class="ui-heat">{calor.map((c) => <i style={`opacity:${c.o.toFixed(2)};animation-delay:${c.d.toFixed(2)}s`}></i>)}</div>
+          </>
+        )}
+        {tipo === 'lista' && (
+          <div class="ui-list">
+            {alunos.map((a, i) => (
+              <div>
+                <span>{a.nome}</span>
+                <svg viewBox="0 0 70 18"><path d={`M0 ${4 + i} L14 ${6 + i * 2} L28 ${5 + i} L42 ${9 + i * 2} L56 ${8 + i * 2} L70 ${a.nivel === 'hi' ? 16 : 10}`} fill="none" stroke={a.nivel === 'hi' ? '#ff8a5c' : '#8d9182'} stroke-width="1.4" /></svg>
+                <span class={`pill ${a.nivel}`}>{a.rotulo}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  )}
+</div>

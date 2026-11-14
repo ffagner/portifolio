@@ -1,0 +1,46 @@
+---
+titulo: Presença e confiança
+ordem: 4
+repos: [edupresenca-app, cert-validator]
+resumo: O EduPresença registra faltas, dispara alertas de risco de evasão e organiza visitas domiciliares. O Cert Validator emite certificados com QR Code e uma página pública que confirma se cada um é verdadeiro.
+chamada: Frequência com alerta precoce de evasão e visitas domiciliares. Certificados com QR Code e página pública de validação.
+stack: [React, TypeScript, Zustand, Zod, Supabase, pg_cron, Firebase, Node, pdf-lib]
+tela: lista
+fluxo: [Faltas, Alerta, Visita]
+numeros:
+  - { valor: '~20', rotulo: 'escolas no piloto' }
+  - { valor: '300', rotulo: 'escolas na meta' }
+  - { valor: '30 mil', rotulo: 'alunos na meta' }
+licao: Evasão se combate antes da décima falta, não depois do fechamento do bimestre.
+status: Em desenvolvimento
+---
+
+## EduPresença: o alerta chega antes da evasão
+
+A secretaria descobria a evasão no fechamento do bimestre, quando já era tarde. O **EduPresença** inverte a ordem: o Agente Educacional lança as faltas em campo, e o banco avisa quando um aluno entra em risco.
+
+### A regra mora no banco
+
+Ao inserir uma falta, uma trigger do PostgreSQL conta as ausências do aluno:
+
+- **3 faltas em 7 dias** geram um alerta semanal.
+- **8 faltas no mês** geram um alerta mensal.
+- Cada município pode mudar esses limites.
+
+Se já existe um alerta aberto do mesmo tipo, o contador é atualizado em vez de criar outro. Faltas com motivo provisório ("aguardando complemento") não contam até o motivo real ser informado. Assim, uma falta lançada às pressas não dispara alerta indevido.
+
+### Da tela ao portão de casa
+
+O alerta não vira visita sozinho: o agente analisa e decide. Doença prolongada ou viagem em família podem ter justificativa óbvia. Quando a visita acontece, o relatório e os anexos (fotos, documentos) ficam presos ao alerta que a originou.
+
+O sistema nasce **multi-tenant**: o piloto tem um município com cerca de 20 escolas, mas o modelo já suporta uma regional inteira, com ~15 municípios, 300 escolas e 30 mil alunos. Toda tabela tem `municipio_id`, e o Row Level Security impede que um dado cruze municípios.
+
+## Cert Validator: o certificado se defende sozinho
+
+Validar certificado por e-mail ou telefone é lento e fácil de fraudar. No **Cert Validator**:
+
+1. A instituição cadastra o certificado no painel e recebe um **QR Code em PNG** para colar no próprio modelo (Word, Canva, Figma).
+2. Qualquer pessoa escaneia o código e cai numa **página pública**, sem login, que mostra os dados do certificado.
+3. A página diz se o certificado é **válido, revogado ou expirado**.
+
+Certificados emitidos não são editados nem apagados: para corrigir, revoga-se e emite-se outro. O histórico fica íntegro.

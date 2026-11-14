@@ -1,0 +1,27 @@
+---
+/** Marca: um ponto vivo (aluno alcançado) cercado pela rede. */
+interface Props {
+  size?: number;
+  claro?: boolean;
+  completa?: boolean;
+  class?: string;
+}
+const { size = 26, claro = true, completa = true, class: cls } = Astro.props;
+const forte = claro ? '#eceee4' : '#15160f';
+const fraco = claro ? '#8d9182' : '#77796e';
+---
+<svg viewBox="0 0 26 26" width={size} height={size} aria-hidden="true" class={cls}>
+  <circle cx="13" cy="4" r="2.2" fill={forte} />
+  <circle cx="13" cy="22" r="2.2" fill={forte} />
+  <circle cx="4" cy="13" r="2.2" fill={forte} />
+  <circle cx="22" cy="13" r="2.2" fill={forte} />
+  {completa && (
+    <>
+      <circle cx="6.6" cy="6.6" r="1.6" fill={fraco} />
+      <circle cx="19.4" cy="19.4" r="1.6" fill={fraco} />
+      <circle cx="19.4" cy="6.6" r="1.6" fill={fraco} />
+      <circle cx="6.6" cy="19.4" r="1.6" fill={fraco} />
+    </>
+  )}
+  <circle cx="13" cy="13" r="3.2" fill="#cdf564" />
+</svg>

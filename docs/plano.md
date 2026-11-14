@@ -1,6 +1,8 @@
 # Portfólio ffagner — Plano
 
-Atualizado em 13/11/2026. Versão editável: [documento do plano](https://claude.ai/artifact/AsSKsxERuBpnvgxU4yzGFN).
+Atualizado em 14/11/2026. Versão editável: [documento do plano](https://claude.ai/artifact/AsSKsxERuBpnvgxU4yzGFN).
+
+**Mudança de rota na F2:** o plano previa React Three Fiber e GSAP. Na prática, o protótipo já resolvia o 3D com Three.js puro e `requestAnimationFrame`, então o site usa Astro sem React. Menos JavaScript enviado e nenhuma dependência a mais.
 
 ## Visão e posicionamento
 
@@ -76,9 +78,9 @@ Home de rolagem única e uma página por case.
 
 | Camada | Escolha |
 | --- | --- |
-| Framework | Astro 5 com ilhas React |
-| 3D | Three.js (React Three Fiber) |
-| Motion | GSAP ScrollTrigger e Lenis |
+| Framework | Astro 5, sem React: cada seção é um componente `.astro` com um script próprio |
+| 3D | Three.js puro (shader de pontos), carregado sob demanda |
+| Motion | `requestAnimationFrame` e CSS; sem GSAP nem Lenis por enquanto |
 | Estilo | Tailwind 4 com tokens em CSS |
 | Conteúdo | Coleções MDX (um arquivo por case) |
 | Contato | Netlify Forms |
@@ -87,8 +89,8 @@ Home de rolagem única e uma página por case.
 ## Roadmap
 
 1. **F0 · Conteúdo e permissões** — nome público, repositórios que podem ser linkados, números publicáveis, prints e vídeos com dados fictícios.
-2. **F1 · Protótipo e design system** — `index.html` deste repositório. *Gate: aprovação do visual.*
-3. **F2 · Base do site** — Astro + Tailwind, home sem 3D, SEO, formulário.
+2. **F1 · Protótipo e design system** — `docs/prototipo/index.html`. ✅ Aprovado em 13/11/2026.
+3. **F2 · Base do site** — Astro + Tailwind, SEO, formulário. ✅ Feito em 14/11/2026, já com a camada 3D do protótipo portada.
 4. **F3 · Camada 3D e motion** — partículas, fluxo, espiral, loader, fallback estático. *Gate: Lighthouse ≥ 90 e contraste AA.*
 5. **F4 · Cases e lançamento** — páginas MDX, 404, domínio próprio, divulgação.
 

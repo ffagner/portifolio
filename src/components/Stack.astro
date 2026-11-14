@@ -1,0 +1,29 @@
+---
+import { stack } from '../data/site';
+---
+<section class="sec" id="stack" aria-labelledby="stack-h" style="padding-top:clamp(60px,8vw,100px)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Stack</span>
+      <h2 class="h-l" id="stack-h">Ferramentas escolhidas<br /><span class="dim">pelo problema.</span></h2>
+      <p>O que aparece de verdade nos package.json e nas migrations dos projetos.</p>
+    </div>
+    <div class="camadas rv">
+      {stack.map((c) => (
+        <div class="camada">
+          <span class="mono dim">{c.camada}</span>
+          <ul>{c.itens.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .camadas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .camada { border-top: 1px solid var(--line-2); padding-top: 18px; }
+  ul { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  li { font-size: 14px; padding: 7px 12px; border-radius: 999px; background: var(--color-ink-2); border: 1px solid var(--line); transition: border-color .2s, color .2s; }
+  li:hover { border-color: var(--color-lime); color: var(--color-lime); }
+  @media (max-width: 760px) { .camadas { grid-template-columns: 1fr; } }
+</style>
