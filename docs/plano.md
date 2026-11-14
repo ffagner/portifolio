@@ -91,7 +91,7 @@ Home de rolagem única e uma página por case.
 1. **F0 · Conteúdo e permissões** — nome público, repositórios que podem ser linkados, números publicáveis, prints e vídeos com dados fictícios.
 2. **F1 · Protótipo e design system** — `docs/prototipo/index.html`. ✅ Aprovado em 13/11/2026.
 3. **F2 · Base do site** — Astro + Tailwind, SEO, formulário. ✅ Feito em 14/11/2026, já com a camada 3D do protótipo portada.
-4. **F3 · Camada 3D e motion** — partículas, fluxo, espiral, loader, fallback estático. *Gate: Lighthouse ≥ 90 e contraste AA.*
+4. **F3 · Camada 3D e motion** — partículas, fluxo, espiral, loader, fallback estático. *Gate: Lighthouse ≥ 90 e contraste AA.* ✅ Gate atingido em 14/11/2026 (Lighthouse local, perfil celular, 3 rodadas): desempenho 97–99, acessibilidade 100, boas práticas 100, SEO 100 na home; 100 em todas as categorias numa página de case.
 5. **F4 · Cases e lançamento** — páginas MDX, 404, domínio próprio, divulgação.
 
 ### Pendências (F0)

@@ -30,13 +30,19 @@ const ondas = [
 <script>
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const ondas = [...document.querySelectorAll<SVGPathElement>('.cartao .onda')];
-    let t = 0;
+    const area = document.querySelector('.cartoes');
+    let t = 0, naTela = false, rodando = false;
     const anim = () => {
+      if (!naTela || document.hidden) { rodando = false; return; }
       t += 0.03;
       ondas.forEach((w, i) => w.setAttribute('transform', `translate(${(Math.sin(t + i) * 10).toFixed(2)} 0)`));
       requestAnimationFrame(anim);
     };
-    if (ondas.length) requestAnimationFrame(anim);
+    const retomar = () => { if (!rodando && naTela && !document.hidden) { rodando = true; requestAnimationFrame(anim); } };
+    if (ondas.length && area) {
+      new IntersectionObserver((es) => { naTela = !!es[0]?.isIntersecting; retomar(); }).observe(area);
+      document.addEventListener('visibilitychange', retomar);
+    }
   }
 </script>
 
