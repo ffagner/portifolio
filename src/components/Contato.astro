@@ -21,6 +21,14 @@ import { site } from '../data/site';
           <p class="estado" role="status" data-estado></p>
         </div>
       </form>
+      {site.email && (
+        <p class="direto">
+          Prefere e-mail? <a href={`mailto:${site.email}`}>{site.email}</a>
+          <button class="copiar" type="button" data-copiar={site.email}>Copiar</button>
+          {site.linkedin && <span class="sep">·</span>}
+          {site.linkedin && <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>}
+        </p>
+      )}
 
       <div class="term" aria-label="Terminal de atalhos">
         <div class="term-bar" aria-hidden="true"><i></i><i></i><i></i><span>atalhos</span></div>
@@ -55,6 +63,12 @@ import { site } from '../data/site';
   .estado { font-size: 14px; color: var(--color-fg-dim); }
   .estado.ok { color: var(--color-lime); }
   .estado.erro { color: var(--color-warn); }
+  .direto { margin-top: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; color: var(--color-fg-dim); }
+  .direto a { color: var(--color-fg); }
+  .direto a:hover { color: var(--color-lime); }
+  .sep { color: var(--color-fg-faint); }
+  .copiar { height: 28px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line-2); background: rgb(255 255 255 / .04); color: var(--color-fg-dim); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .copiar:hover { color: var(--color-fg); }
   .term { margin-top: 24px; border-radius: 14px; background: var(--color-ink-1); border: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 13px; overflow: hidden; max-width: 540px; }
   .term-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
   .term-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--color-ink-3); }
@@ -66,5 +80,5 @@ import { site } from '../data/site';
   .term-in label { color: var(--color-lime); white-space: nowrap; }
   .term-in input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--color-fg); font: inherit; outline: none; }
   @media (max-width: 860px) { .cta { grid-template-columns: 1fr; } .esfera { max-width: 340px; order: -1; } }
-  @media (max-width: 520px) { .dupla { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .dupla { grid-template-columns: 1fr; } .sep { display: none; } }
 </style>

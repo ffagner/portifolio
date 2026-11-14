@@ -22,6 +22,7 @@ const ano = new Date().getFullYear();
         <h2>Contato</h2>
         <ul>
           <li><a href="/#contato">Mensagem</a></li>
+          {site.email && <li><a href={`mailto:${site.email}`}>E-mail</a></li>}
           {site.linkedin && <li><a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></li>}
         </ul>
       </div>
