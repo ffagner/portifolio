@@ -37,7 +37,7 @@ import { nav, site } from '../data/site';
 
 <script>
   // No Mac o atalho é ⌘K; nos demais sistemas, Ctrl K.
-  if (/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) {
+  if (/Mac|iPhone|iPad/.test(navigator.userAgent)) {
     const t = document.querySelector('[data-tecla]');
     if (t) t.textContent = '⌘K';
   }

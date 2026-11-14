@@ -3,7 +3,9 @@
  * (ver docs/plano.md) e somem da interface enquanto não forem definidos.
  */
 export const site = {
+  /** Marca: logo, navegação e GitHub. */
   nome: 'ffagner',
+  nomeCompleto: 'Fagner Farias',
   papel: 'Dev Full-Stack · EdTech',
   tese: ['Software que faz a rede pública', 'enxergar seus alunos.'],
   descricao:
@@ -18,6 +20,7 @@ export const nav = [
   { href: '/#cases', rotulo: 'Cases' },
   { href: '/#projetos', rotulo: 'Projetos' },
   { href: '/#stack', rotulo: 'Stack' },
+  { href: '/#sobre', rotulo: 'Sobre' },
 ];
 
 /** Conjuntos de cards do hero. Números tirados dos documentos dos repositórios. */
