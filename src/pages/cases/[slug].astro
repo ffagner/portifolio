@@ -17,7 +17,7 @@ const { Content } = await render(caso);
 const d = caso.data;
 const repos = d.repos.map((nome) => ({ nome, publico: projetos.find((p) => p.nome === nome)?.publico ?? false }));
 ---
-<Base titulo={d.titulo} descricao={d.resumo}>
+<Base titulo={d.titulo} descricao={d.resumo} imagem={d.video ? { src: `${d.video}.jpg`, largura: 1280, altura: 800 } : undefined}>
   <article>
     <header class="topo">
       <div class="wrap">
