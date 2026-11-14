@@ -121,7 +121,8 @@
 .screen .bar span { margin-left: 8px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .screen .rec { position: absolute; right: 10px; top: 7px; display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 9.5px; color: var(--color-fg-dim); letter-spacing: .08em; }
 .screen .rec::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-warn); animation: pulse 1.2s infinite; }
-.screen video { position: absolute; inset: 28px 0 0; width: 100%; height: calc(100% - 28px); object-fit: cover; }
+.screen video { position: absolute; inset: 28px 0 0; width: 100%; height: calc(100% - 28px); object-fit: cover; object-position: top left; background: #f7f8f5; }
+.screen.com-video { height: auto; aspect-ratio: 1280 / 828; }
 .screen-lg { height: clamp(260px, 42vw, 460px); }
 
 .ui { position: absolute; inset: 28px 0 0; padding: 14px; }

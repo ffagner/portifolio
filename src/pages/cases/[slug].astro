@@ -39,7 +39,7 @@ const repos = d.repos.map((nome) => ({ nome, publico: projetos.find((p) => p.nom
         <div class="fluxo mono" aria-label="Fluxo do produto">
           <span>{d.fluxo[0]}</span><i></i><span>{d.fluxo[1]}</span><i></i><span class="fim">{d.fluxo[2]}</span>
         </div>
-        {!d.video && <p class="aviso">Tela animada com dados fictícios. A gravação do produto entra aqui.</p>}
+        <p class="aviso">{d.video ? 'Gravação do produto com dados fictícios, rodando contra um backend simulado.' : 'Tela animada com dados fictícios. A gravação do produto entra aqui.'}</p>
       </div>
 
       <div class="corpo">
