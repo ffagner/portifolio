@@ -9,8 +9,8 @@ export const site = {
   descricao:
     'Dev Full-Stack EdTech. Produtos de avaliação, frequência escolar e gestão para redes públicas de ensino, com LGPD por padrão.',
   github: 'https://github.com/ffagner',
-  linkedin: null as string | null,
-  email: null as string | null,
+  linkedin: 'https://www.linkedin.com/in/fagnermartinsfarias/' as string | null,
+  email: 'farias.live@gmail.com' as string | null,
 };
 
 export const nav = [

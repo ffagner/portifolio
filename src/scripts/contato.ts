@@ -31,6 +31,13 @@ export function iniciarContato() {
     }
   });
 
+  // ----- copiar e-mail -----
+  sec.querySelectorAll<HTMLButtonElement>('[data-copiar]').forEach((b) => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copiar ?? ''); b.textContent = 'Copiado'; }
+    catch { b.textContent = 'Selecione e copie'; }
+    window.setTimeout(() => (b.textContent = 'Copiar'), 1800);
+  }));
+
   // ----- terminal -----
   const saida = sec.querySelector<HTMLElement>('[data-saida]')!;
   const termForm = sec.querySelector<HTMLFormElement>('[data-term]')!;

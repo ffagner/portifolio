@@ -60,7 +60,7 @@ docs/                 plano.md e o protótipo original (docs/prototipo/index.htm
 ## Pendências (F0)
 
 - [ ] Domínio final e `SITE_URL`
-- [ ] E-mail e LinkedIn em `src/data/site.ts` (enquanto `null`, não aparecem)
+- [x] E-mail e LinkedIn em `src/data/site.ts`
 - [ ] Papel de ffagner em cada case (`papel:` no frontmatter; a seção só aparece quando preenchida)
 - [ ] Revisar as descrições dos projetos sem case em `src/data/projetos.ts`, que foram escritas a partir do nome do repositório
 - [ ] Gravar os vídeos dos produtos com dados fictícios
