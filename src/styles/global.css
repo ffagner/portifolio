@@ -61,6 +61,8 @@
   ::selection { background: var(--color-lime); color: var(--color-ink-0); }
 }
 
+html.menu-aberto { overflow: hidden; }
+
 /* ---------- utilidades de composição ---------- */
 .wrap { max-width: 1200px; margin-inline: auto; padding-left: var(--gut-l); padding-right: var(--gut-r); }
 .mono { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }

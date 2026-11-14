@@ -3,17 +3,22 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Rodape from '../components/Rodape.astro';
 import Carregador from '../components/Carregador.astro';
+import Paleta from '../components/Paleta.astro';
 import { site } from '../data/site';
 
 interface Props {
   titulo?: string;
   descricao?: string;
   carregador?: boolean;
+  /** Imagem de compartilhamento própria da página (caminho em /public) e o tamanho dela. */
+  imagem?: { src: string; largura: number; altura: number };
 }
-const { titulo, descricao = site.descricao, carregador = false } = Astro.props;
+const { titulo, descricao = site.descricao, carregador = false, imagem } = Astro.props;
 const tituloCompleto = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · ${site.papel}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const og = new URL('/og.png', Astro.site);
+const og = new URL(imagem?.src ?? '/og.png', Astro.site);
+const ogLargura = imagem?.largura ?? 1200;
+const ogAltura = imagem?.altura ?? 630;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -32,8 +37,8 @@ const og = new URL('/og.png', Astro.site);
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={og} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={String(ogLargura)} />
+    <meta property="og:image:height" content={String(ogAltura)} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
@@ -45,6 +50,7 @@ const og = new URL('/og.png', Astro.site);
       <slot />
     </main>
     <Rodape />
+    <Paleta />
     <script>
       import '../scripts/revelar';
     </script>
