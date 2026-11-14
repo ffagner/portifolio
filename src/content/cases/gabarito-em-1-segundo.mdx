@@ -1,0 +1,47 @@
+---
+titulo: Gabarito em 1 segundo
+ordem: 2
+repos: [answer-sheets]
+resumo: A correção de cadernos em papel e a tabulação por turma viraram um formulário na nuvem. O relatório de proficiência fica pronto assim que as respostas são enviadas.
+chamada: Correção de cadernos em papel e tabulação por turma viraram um formulário. O relatório de proficiência sai no envio.
+stack: [React, TypeScript, Vite, Tailwind, Supabase, Edge Functions, RLS]
+tela: gabarito
+fluxo: [Respostas, Chave-mestre, Proficiência]
+numeros:
+  - { valor: '~1 s', rotulo: 'do envio ao relatório' }
+  - { valor: '3', rotulo: 'perfis de acesso' }
+  - { valor: 'A–E', rotulo: 'por questão' }
+licao: Quando o confronto com o gabarito é automático, o professor volta a olhar para a turma em vez da planilha.
+status: Em produção
+---
+
+## O problema
+
+O fluxo antigo era todo em papel: recolher os cadernos preenchidos, conferir cada resposta contra o gabarito ("A, C, B, E…") e só depois tabular os números para descobrir se a turma aprendeu o conteúdo. O resultado chegava tarde demais para mudar a aula.
+
+## A solução
+
+O **Answer Sheets** digitaliza a coleta e a correção:
+
+- **Portal simples** para lançar as respostas de cada aluno, escolhendo série, avaliação, matéria e aluno em cascata.
+- **Chaves-mestre de gabarito** cadastradas pela administração, agrupadas por avaliação.
+- **Confronto automático** entre o que foi marcado e o gabarito, com a taxa de acerto por turma.
+- **Produção textual** avaliada à parte, com critérios próprios, porque redação não se corrige por gabarito.
+
+## Segurança por linha, não por tela
+
+Não existe API própria: o front conversa direto com o Supabase, e toda a autorização mora no banco, com Row Level Security.
+
+| Perfil | Pode |
+| --- | --- |
+| Admin | Tudo, inclusive cadastrar cidades, escolas, gabaritos e usuários |
+| Escola | Lançar e ler respostas só da própria escola |
+| Formador | Ler, sem alterar, as séries e matérias que acompanha |
+
+O filtro na tela é só conveniência. Se alguém tentar ler dados de outra escola pela API, o banco recusa.
+
+## O que mudou
+
+- O relatório de proficiência fica pronto cerca de um segundo depois do envio.
+- Coordenação e formadores acompanham o mesmo dado, cada um no seu alcance.
+- Avaliações antigas, sem agrupamento, continuam funcionando ao lado das novas.

@@ -1,0 +1,51 @@
+---
+titulo: Resultados sem vazamento
+ordem: 1
+repos: [painel-resultados-tendencia, csv-csv-importador]
+resumo: Relatórios Power BI publicados na web expunham nome e desempenho de crianças. O painel novo entrega um arquivo por escola, só para quem tem login, e serve qualquer formato de prova sem um relatório por município.
+chamada: Relatórios Power BI públicos expunham nome e desempenho de crianças. O painel novo entrega um arquivo por escola, só para quem tem login.
+stack: [React, TypeScript, Vite, Supabase, TanStack Query, TanStack Table, Recharts, jsPDF]
+tela: barras
+fluxo: [CSV, Snapshot, Painel com login]
+numeros:
+  - { valor: '~15', rotulo: 'municípios na carteira' }
+  - { valor: '~8', rotulo: 'avaliações por ano' }
+  - { valor: '618 ms', rotulo: 'para carregar um resultado' }
+licao: A única proteção real é não entregar o arquivo a quem não deve ver. Filtro no navegador não é segurança.
+status: Em desenvolvimento
+---
+
+## O problema
+
+Os resultados das avaliações diagnósticas eram publicados com o recurso "Publicar na Web" do Power BI. Isso trazia três problemas ao mesmo tempo:
+
+- **LGPD.** Os relatórios mostravam nome, escola, turma e desempenho individual de crianças, e algumas páginas chegaram a aparecer em buscadores.
+- **Sem controle de acesso.** A licença gratuita não permite login nem segurança por linha.
+- **Custo de manutenção.** O número de questões muda de prova para prova (12, 22, 26…), e a matriz do Power BI tem colunas fixas. Era preciso um relatório por município, série e caderno: dezenas de arquivos para manter.
+
+## A decisão que mudou o jogo
+
+> Resultado entregue não muda. Então ele não precisa de banco: precisa de arquivo.
+
+Em vez de consultar o banco a cada acesso, o painel gera um **snapshot** quando a avaliação é fechada: arquivos JSON versionados num bucket privado. A tela baixa só os arquivos da geração escolhida e calcula os recortes no navegador.
+
+| Decisão | Por quê |
+| --- | --- |
+| Resultado servido como arquivo, nunca por consulta | Elimina carga no banco e vira o registro permanente |
+| Bucket privado, download autenticado | Bucket público repetiria o problema do link do Power BI |
+| Um arquivo por escola para dados nominais | Tudo que chega ao navegador é visível; a proteção é não entregar |
+| Estrutura dirigida por manifesto | Um painel único para 12, 22 ou 26 questões e 2 ou 4 componentes |
+
+## Como funciona
+
+1. O sistema do cliente exporta CSV. O importador valida e grava numa área de trabalho temporária.
+2. A área admin do painel calcula tudo de uma vez (percentuais, faixas de proficiência, habilidades, alternativas) e grava o snapshot.
+3. Uma função no banco confirma a geração numa transação. Se algo falhar, a geração anterior continua ativa.
+4. Secretaria, escola e formador entram com conta pessoal e veem só o próprio alcance. Turmas com menos de 10 alunos têm a distribuição suprimida, porque turma pequena identifica aluno mesmo sem nome.
+
+## O que a rede ganhou
+
+- Um painel para todas as avaliações, em vez de um relatório por município, série e caderno.
+- Telas que carregam em menos de um segundo e filtros que não fazem nenhuma requisição.
+- Impressão em A4 para o conselho de classe, uma turma por página.
+- Regras de cálculo documentadas e conferidas contra o relatório antigo, com cada divergência explicada.

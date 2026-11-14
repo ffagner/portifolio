@@ -1,0 +1,92 @@
+---
+import Marca from './Marca.astro';
+import { nos } from '../data/ecossistema';
+const n0 = nos[0]!;
+const cx = 500, cy = 312;
+const caminhos = nos.map((n) => {
+  const x = n.x * 10, y = n.y * 6.25;
+  const mx = (x + cx) / 2 + (y - cy) * 0.25, my = (y + cy) / 2 - (x - cx) * 0.12;
+  return { id: n.id, d: `M${cx} ${cy} Q${mx} ${my} ${x} ${y}` };
+});
+---
+<section class="sec cream" style="padding-top:0" aria-labelledby="eco-h" data-eco>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Ecossistema</span>
+      <h2 class="h-l" id="eco-h">Uma rede de ensino.<br />Um modelo conectado.</h2>
+      <p>Avaliação, frequência, certificados e prestação de contas falam entre si. Escolha um nó para ver o que ele faz.</p>
+    </div>
+    <div class="eco rv">
+      <aside class="inspetor" aria-live="polite">
+        <div class="topo"><span class="mono">■ Inspetor</span><span class="vivo">ao vivo</span></div>
+        <div class="nome"><i data-i="sigla">{n0.sigla}</i><span data-i="nome">{n0.nome}</span></div>
+        <div class="numero"><span data-i="numero">{n0.numero}</span><small data-i="unidade">{n0.unidade}</small></div>
+        <p class="texto" data-i="texto">{n0.texto}</p>
+        <svg class="spark" viewBox="0 0 260 56" preserveAspectRatio="none" aria-hidden="true"><path data-i="linha" d="" fill="none" stroke="#6f9a10" stroke-width="2" /><path data-i="area" d="" fill="rgb(160 210 40 / .14)" /></svg>
+        <div class="mono rot">Stack</div>
+        <ul data-i="stack">{n0.stack.map(([a, b]) => <li><span>{a}</span><span>{b}</span></li>)}</ul>
+        <a class="ver" data-i="caso" href={n0.caso ? `/cases/${n0.caso}/` : '#cases'} hidden={!n0.caso}>Ver o case →</a>
+      </aside>
+      <div class="grafo">
+        <svg class="linhas" viewBox="0 0 1000 625" preserveAspectRatio="none" aria-hidden="true">
+          <circle class="anel" cx={cx} cy={cy} r="260" />
+          <circle class="anel" cx={cx} cy={cy} r="170" />
+          {caminhos.map((c, i) => <path class:list={['cam', { on: i === 0 }]} data-cam={c.id} d={c.d} />)}
+        </svg>
+        <div class="nucleo" aria-hidden="true"><Marca size={44} claro={true} completa={false} /></div>
+        {nos.map((n, i) => (
+          <button class="no" type="button" style={`left:${n.x}%;top:${n.y}%`} data-no={n.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+            <i>{n.sigla}</i><span><b>{n.nome}</b><small>{n.sub}</small></span>
+          </button>
+        ))}
+        <span class="dica">↖ Clique ou passe o mouse sobre um nó</span>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-eco-dados set:html={JSON.stringify(nos)}></script>
+</section>
+
+<script>
+  import { iniciarEcossistema } from '../scripts/ecossistema';
+  iniciarEcossistema();
+</script>
+
+<style>
+  .eco { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: center; }
+  .inspetor { background: var(--color-cream-2); border: 1px solid var(--cream-line); border-radius: 18px; padding: 18px; }
+  .topo { display: flex; justify-content: space-between; align-items: center; }
+  .topo .mono { color: var(--color-cream-dim); }
+  .vivo { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #4f6d0b; }
+  .vivo::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #7fb20e; animation: pulse 1.6s infinite; }
+  .nome { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 20px; }
+  .nome i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--color-cream-ink); color: var(--color-lime); font-style: normal; font-family: var(--font-mono); font-size: 12px; }
+  .numero { font-size: 42px; letter-spacing: -.03em; margin-top: 10px; line-height: 1; }
+  .numero small { font-size: 13px; color: var(--color-cream-dim); letter-spacing: 0; margin-left: 6px; }
+  .texto { font-size: 13.5px; color: var(--color-cream-dim); margin-top: 8px; min-height: 3em; }
+  .spark { display: block; width: 100%; height: 56px; margin-top: 8px; }
+  .rot { color: var(--color-cream-dim); margin-top: 6px; }
+  ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+  li { display: flex; justify-content: space-between; gap: 12px; background: var(--color-cream); border: 1px solid var(--cream-line); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  li span:last-child { font-family: var(--font-mono); font-size: 11px; color: #4f6d0b; text-align: right; }
+  .ver { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 500; color: var(--color-cream-ink); }
+  .grafo { position: relative; aspect-ratio: 16 / 10; max-width: 100%; }
+  .linhas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .anel { fill: none; stroke: var(--cream-line); }
+  .cam { fill: none; stroke: rgb(21 22 15 / .28); stroke-width: 1.2; stroke-dasharray: 4 5; transition: stroke .3s; }
+  .cam.on { stroke: var(--color-cream-ink); stroke-width: 1.5; animation: dash 1.2s linear infinite; }
+  .nucleo { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; transform: translate(-50%, -50%); border-radius: 20px; background: var(--color-cream-ink); display: grid; place-items: center; box-shadow: 0 24px 50px -20px rgb(21 22 15 / .6); }
+  .no { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; background: var(--color-cream); border: 1px solid var(--cream-line); cursor: pointer; white-space: nowrap; text-align: left; color: var(--color-cream-ink); transition: background .25s, color .25s; box-shadow: 0 8px 20px -14px rgb(21 22 15 / .5); }
+  .no i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #e1f0b8; font-style: normal; font-family: var(--font-mono); font-size: 11px; color: #3e5609; }
+  .no b { font-weight: 500; font-size: 14px; display: block; line-height: 1.1; }
+  .no small { font-size: 11.5px; color: var(--color-cream-dim); display: block; }
+  .no[aria-pressed="true"] { background: var(--color-cream-ink); color: var(--color-cream); border-color: var(--color-cream-ink); }
+  .no[aria-pressed="true"] i { background: var(--color-lime); color: var(--color-cream-ink); }
+  .no[aria-pressed="true"] small { color: #a7aa9c; }
+  .dica { position: absolute; left: 0; bottom: -6px; font-size: 12px; color: var(--color-cream-dim); }
+  @media (max-width: 900px) {
+    .eco { grid-template-columns: 1fr; }
+    .grafo { aspect-ratio: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .linhas, .nucleo, .dica { display: none; }
+    .no { position: static; transform: none; white-space: normal; }
+  }
+</style>

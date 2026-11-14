@@ -1,0 +1,70 @@
+---
+import { site } from '../data/site';
+---
+<section class="sec" id="contato" aria-labelledby="cta-h" style="border-top:1px solid var(--line)" data-contato>
+  <div class="wrap cta">
+    <div class="rv">
+      <span class="eyebrow">Contato</span>
+      <h2 class="h-l" id="cta-h" style="margin-top:18px">Sua rede merece<br /><span class="dim">enxergar com clareza.</span></h2>
+      <p class="lede" style="margin-top:18px">Secretaria, consultoria ou time de produto: me conte o problema em uma frase.</p>
+
+      <form class="form" name="contato" method="POST" data-netlify="true" netlify-honeypot="empresa-site" data-form>
+        <input type="hidden" name="form-name" value="contato" />
+        <p class="pote"><label>Não preencha <input name="empresa-site" tabindex="-1" autocomplete="off" /></label></p>
+        <div class="dupla">
+          <label class="campo"><span>Nome</span><input id="ct-nome" name="nome" type="text" autocomplete="name" required /></label>
+          <label class="campo"><span>E-mail</span><input id="ct-email" name="email" type="email" autocomplete="email" required /></label>
+        </div>
+        <label class="campo"><span>O problema, em uma frase</span><textarea id="ct-msg" name="mensagem" rows="3" required></textarea></label>
+        <div class="enviar">
+          <button class="btn btn-lime" type="submit">Enviar mensagem <span class="arr" aria-hidden="true">→</span></button>
+          <p class="estado" role="status" data-estado></p>
+        </div>
+      </form>
+
+      <div class="term" aria-label="Terminal de atalhos">
+        <div class="term-bar" aria-hidden="true"><i></i><i></i><i></i><span>atalhos</span></div>
+        <div class="term-out" aria-live="polite" data-saida>Digite <span class="ok">ajuda</span> para ver os comandos.</div>
+        <form class="term-in" autocomplete="off" data-term>
+          <label for="term-cmd">ffagner ~ $</label>
+          <input id="term-cmd" name="cmd" type="text" placeholder="cases" spellcheck="false" />
+        </form>
+      </div>
+    </div>
+    <canvas class="esfera" aria-hidden="true" data-esfera></canvas>
+  </div>
+  <script type="application/json" data-contato-dados set:html={JSON.stringify({ github: site.github, linkedin: site.linkedin, email: site.email })}></script>
+</section>
+
+<script>
+  import { iniciarContato } from '../scripts/contato';
+  iniciarContato();
+</script>
+
+<style>
+  .cta { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  .esfera { width: 100%; aspect-ratio: 1 / 1; max-width: 520px; justify-self: center; display: block; }
+  .form { margin-top: 28px; display: grid; gap: 12px; max-width: 540px; }
+  .dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .campo { display: grid; gap: 6px; }
+  .campo span { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-fg-dim); }
+  .campo input, .campo textarea { width: 100%; background: var(--color-ink-1); border: 1px solid var(--line-2); border-radius: 12px; padding: 12px 14px; color: var(--color-fg); font: inherit; font-size: 15px; resize: vertical; }
+  .campo input:focus, .campo textarea:focus { outline: none; border-color: var(--color-lime); box-shadow: 0 0 0 3px rgb(205 245 100 / .15); }
+  .pote { position: absolute; left: -9999px; }
+  .enviar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .estado { font-size: 14px; color: var(--color-fg-dim); }
+  .estado.ok { color: var(--color-lime); }
+  .estado.erro { color: var(--color-warn); }
+  .term { margin-top: 24px; border-radius: 14px; background: var(--color-ink-1); border: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 13px; overflow: hidden; max-width: 540px; }
+  .term-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .term-bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--color-ink-3); }
+  .term-bar span { margin-left: 8px; font-size: 11px; color: var(--color-fg-faint); }
+  .term-out { padding: 12px 14px 4px; color: var(--color-fg-dim); min-height: 72px; max-height: 180px; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+  .term-out :global(.ok) { color: var(--color-lime); }
+  .term-out :global(.cmd) { color: var(--color-fg); }
+  .term-in { display: flex; align-items: center; gap: 8px; padding: 8px 14px 14px; }
+  .term-in label { color: var(--color-lime); white-space: nowrap; }
+  .term-in input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--color-fg); font: inherit; outline: none; }
+  @media (max-width: 860px) { .cta { grid-template-columns: 1fr; } .esfera { max-width: 340px; order: -1; } }
+  @media (max-width: 520px) { .dupla { grid-template-columns: 1fr; } }
+</style>

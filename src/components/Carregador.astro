@@ -1,0 +1,71 @@
+---
+/** Loader da home: conta "alunos carregados". Aparece uma vez por sessão e some sozinho mesmo sem JS. */
+const pontos: { cx: number; cy: number; r: number; vivo: boolean; atraso: number }[] = [];
+for (let r = 0; r < 9; r++) {
+  for (let c = 0; c < 9; c++) {
+    const dx = c - 4, dy = r - 4, d = Math.hypot(dx, dy);
+    if (d > 4.3) continue;
+    const vivo = Math.abs(dx) <= 1 && Math.abs(dy) <= 1;
+    pontos.push({ cx: 12 + c * 12, cy: 12 + r * 12, r: vivo ? 3.6 : 2.4, vivo, atraso: Math.round(d * 90) });
+  }
+}
+---
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="mono dim">ffagner · sinal</div>
+  <div class="loader-mark">
+    <svg viewBox="0 0 120 120" width="120" height="120">
+      {pontos.map((p) => <circle cx={p.cx} cy={p.cy} r={p.r} fill={p.vivo ? '#cdf564' : '#5c6053'} style={`animation-delay:${p.atraso}ms`} />)}
+    </svg>
+  </div>
+  <div class="loader-foot">
+    <div class="loader-count"><span id="loader-n">0</span><sup>%</sup></div>
+    <div class="mono dim">carregando alunos</div>
+  </div>
+  <div class="loader-bar"><i id="loader-bar"></i></div>
+</div>
+
+<script is:inline>
+  // Pula o loader se já foi visto nesta sessão (antes da primeira pintura).
+  try { if (sessionStorage.getItem('loader-visto')) document.getElementById('loader')?.remove(); } catch (e) {}
+</script>
+
+<script>
+  const el = document.getElementById('loader');
+  if (el) {
+    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduz) el.remove();
+    else {
+      const n = document.getElementById('loader-n')!;
+      const bar = document.getElementById('loader-bar')!;
+      const t0 = performance.now();
+      const dur = 1300;
+      const passo = (t: number) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        n.textContent = String(Math.round(e * 100));
+        bar.style.width = `${e * 100}%`;
+        if (p < 1) requestAnimationFrame(passo);
+        else {
+          el.classList.add('done');
+          try { sessionStorage.setItem('loader-visto', '1'); } catch (e) {}
+          setTimeout(() => el.remove(), 600);
+        }
+      };
+      requestAnimationFrame(passo);
+    }
+  }
+</script>
+
+<style>
+  .loader { position: fixed; inset: 0; z-index: 100; background: var(--color-ink-0); display: flex; flex-direction: column; justify-content: space-between; padding: calc(24px + env(safe-area-inset-top, 0px)) var(--gut-r) calc(24px + env(safe-area-inset-bottom, 0px)) var(--gut-l); animation: sair .5s ease 2.6s forwards; }
+  .loader.done { animation: sair .5s ease forwards; }
+  @keyframes sair { to { opacity: 0; visibility: hidden; } }
+  .loader-mark { flex: 1; display: grid; place-items: center; }
+  .loader-mark circle { animation: pulse 1.4s ease-in-out infinite; }
+  .loader-foot { display: flex; justify-content: space-between; align-items: flex-end; }
+  .loader-count { font-size: clamp(56px, 9vw, 104px); font-weight: 300; letter-spacing: -.04em; line-height: .9; font-variant-numeric: tabular-nums; }
+  .loader-count sup { font-size: .3em; color: var(--color-fg-dim); vertical-align: top; margin-left: 4px; }
+  .loader-bar { position: absolute; left: var(--gut-l); right: var(--gut-r); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); height: 1px; background: var(--line); }
+  .loader-bar i { display: block; height: 100%; width: 0; background: var(--color-lime); box-shadow: 0 0 8px var(--color-lime); }
+  @media (prefers-reduced-motion: reduce) { .loader { display: none; } }
+</style>

@@ -1,0 +1,57 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Rodape from '../components/Rodape.astro';
+import Carregador from '../components/Carregador.astro';
+import { site } from '../data/site';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+  carregador?: boolean;
+}
+const { titulo, descricao = site.descricao, carregador = false } = Astro.props;
+const tituloCompleto = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · ${site.papel}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = new URL('/og.png', Astro.site);
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#0d0e0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body id="top">
+    {carregador && <Carregador />}
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <Nav />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Rodape />
+    <script>
+      import '../scripts/revelar';
+    </script>
+  </body>
+</html>
+
+<style>
+  .pular { position: absolute; left: 12px; top: -60px; z-index: 70; background: var(--color-lime); color: var(--color-ink-0); padding: 10px 14px; border-radius: 10px; font-weight: 500; text-decoration: none; }
+  .pular:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
+</style>

@@ -1,0 +1,39 @@
+---
+titulo: Gestão escolar como SaaS
+ordem: 3
+repos: [EduMetric-SaaS, saas-pdde-app]
+resumo: Dois produtos para quem dirige a rede e a escola. O EduMetric é um protótipo de monitoramento de desempenho multi-tenant, com heatmap e mapa territorial. O SaaS PDDE organiza a prestação de contas do Programa Dinheiro Direto na Escola.
+chamada: Monitoramento de desempenho multi-tenant para gestores e prestação de contas do PDDE sem planilha.
+stack: [React, TypeScript, Vite, Tailwind, shadcn/ui, Recharts, Supabase, Docker]
+tela: heatmap
+fluxo: [Escolas, Heatmap, Prioridades]
+numeros:
+  - { valor: '2', rotulo: 'produtos' }
+  - { valor: 'Multi', rotulo: 'tenant por município' }
+  - { valor: 'PDDE', rotulo: 'prestação de contas' }
+licao: Gestor não quer mais um gráfico. Quer saber qual escola visitar primeiro.
+status: Protótipo
+---
+
+## EduMetric: onde olhar primeiro
+
+O EduMetric nasceu de uma pergunta de secretaria: **com dezenas de escolas, por onde começar?** O protótipo reúne, numa tela, o que costuma ficar espalhado em relatórios:
+
+- **Heatmap** de escolas por habilidade, para enxergar padrões da rede inteira.
+- **Mapa territorial**, porque escolas vizinhas costumam ter os mesmos desafios.
+- **Lista de prioridades**, ordenando as escolas que precisam de visita.
+- **Gestão de usuários e configurações** por município, já pensada como multi-tenant.
+
+Hoje ele roda com dados de exemplo. Serve para validar o desenho com gestores antes de ligar dados reais.
+
+## SaaS PDDE: dinheiro da escola sem planilha
+
+O PDDE repassa recursos diretamente às escolas, e o diretor precisa prestar contas de cada centavo. O SaaS PDDE organiza esse fluxo para quem não é contador:
+
+- Front em React, TypeScript, Tailwind e shadcn/ui.
+- Supabase com PostgreSQL e Auth, rodando localmente via Docker no desenvolvimento.
+- Schema versionado em migrations desde o primeiro dia.
+
+## O que os dois têm em comum
+
+Os dois tratam a escola como **cliente** e o município como **inquilino**. Cada dado pertence a um município, e o isolamento é garantido no banco, não na tela.

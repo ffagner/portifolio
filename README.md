@@ -2,30 +2,68 @@
 
 Portfólio de Dev Full-Stack EdTech: **"Software que faz a rede pública enxergar seus alunos."**
 
-Este repositório está na fase **F1 (protótipo)**. O `index.html` é um protótipo navegável, autocontido, que valida a direção visual antes do site definitivo em Astro.
+Site estático em [Astro 5](https://astro.build), com Tailwind 4 e Three.js. Cada ponto na tela é um aluno.
 
-## Ver o protótipo
+## Rodar
 
-Abra `index.html` no navegador, ou sirva a pasta:
+Requer Node 22.
 
 ```bash
-npx serve .
+npm install
 ```
 
-Precisa de internet para carregar Three.js (cdnjs) e as fontes (Google Fonts).
+```bash
+npm run dev
+```
 
-## O que tem no protótipo
+```bash
+npm run build
+```
 
-- Loader com contagem e marca em pontos
-- Hero com plano 3D de partículas (Three.js) e cards de métricas presos por hastes
-- Fluxo de dados em 4 passos (Importar → Validar → Snapshot → Painel)
-- Decisões de arquitetura e grafo do ecossistema com inspetor
-- 4 cases com tilt 3D e modal
-- Espiral 3D de projetos com filtros
-- Terminal de contato e esfera de pontos
+`npm run build` roda o `astro check` (tipos) antes de gerar `dist/`.
 
-Respeita `prefers-reduced-motion` e funciona em telas de celular.
+## Estrutura
 
-## Plano
+```
+src/
+  content/cases/      um .mdx por case (texto + frontmatter validado em content.config.ts)
+  data/               site.ts (textos e links), projetos.ts (espiral), ecossistema.ts (grafo)
+  components/         Hero, Fluxo, Principios, Ecossistema, Cases, Biblioteca, Stack, Contato, Tela…
+  scripts/            comportamento: hero.ts (Three.js), fluxo.ts, ecossistema.ts, biblioteca.ts, contato.ts
+  layouts/Base.astro  <head> com SEO e Open Graph, navegação e rodapé
+  pages/              index, cases/[slug], 404
+public/               favicon, og.png, robots.txt
+docs/                 plano.md e o protótipo original (docs/prototipo/index.html)
+```
 
-O plano completo (posicionamento, direção visual, cases, stack e roadmap) está em [`docs/plano.md`](docs/plano.md).
+### Para editar
+
+- **Textos da home, números do hero, passos do fluxo e stack:** `src/data/site.ts`.
+- **Um case:** o `.mdx` correspondente em `src/content/cases/`. O frontmatter define título, números, stack e a tela animada.
+- **Vídeo do produto num case:** coloque o arquivo em `public/videos/` e adicione `video: /videos/nome.mp4` no frontmatter. A tela animada é substituída pelo vídeo.
+- **Projetos da espiral:** `src/data/projetos.ts`.
+
+## Deploy (Netlify)
+
+`netlify.toml` já configura build, pasta `dist` e cabeçalhos de cache. Ao conectar o repositório no Netlify:
+
+1. Defina a variável `SITE_URL` com o domínio final (usada no sitemap, canonical e Open Graph).
+2. Ative **Forms** no painel do site: o formulário de contato usa Netlify Forms.
+
+## Acessibilidade e desempenho
+
+- Com `prefers-reduced-motion`, o 3D desenha um único quadro e as animações param.
+- Sem WebGL, o hero mostra um plano de pontos estático em CSS.
+- Three.js é baixado só quando o hero aparece; animações pausam fora da tela e com a aba em segundo plano.
+- Fontes servidas pelo próprio site (Fontsource), sem chamadas externas.
+
+## Pendências (F0)
+
+- [ ] Domínio final e `SITE_URL`
+- [ ] E-mail e LinkedIn em `src/data/site.ts` (enquanto `null`, não aparecem)
+- [ ] Papel de ffagner em cada case (`papel:` no frontmatter; a seção só aparece quando preenchida)
+- [ ] Revisar as descrições dos projetos sem case em `src/data/projetos.ts`, que foram escritas a partir do nome do repositório
+- [ ] Gravar os vídeos dos produtos com dados fictícios
+- [ ] Confirmar o status de cada case (Em produção, Em desenvolvimento, Protótipo)
+
+O plano completo está em [`docs/plano.md`](docs/plano.md).

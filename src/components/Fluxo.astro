@@ -1,0 +1,64 @@
+---
+import { fluxo } from '../data/site';
+const p = fluxo[0]!;
+---
+<section class="sec" id="fluxo" aria-labelledby="fluxo-h" data-fluxo>
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Como funciona</span>
+      <h2 class="h-l" id="fluxo-h">Do CSV bruto ao painel<br /><span class="dim">que a secretaria abre.</span></h2>
+      <p>Quatro passos que se repetem nos projetos: o dado entra sujo, sai validado e chega a quem decide sem expor ninguém.</p>
+    </div>
+    <div class="palco rv" data-palco>
+      <canvas aria-hidden="true" data-fluxo-cv></canvas>
+      {p.trilhas.map((t, i) => <span class="trilha" style={`top:${[40, 66, 92][i]}%`} data-trilha>{t}</span>)}
+      <div class="titulo" aria-live="polite">
+        <h3 data-f="titulo">{p.titulo}</h3>
+        <p data-f="texto">{p.texto}</p>
+      </div>
+      <div class="card">
+        <span class="mono" data-f="chave">{p.chave}</span>
+        <strong data-f="detalhe">{p.detalhe}</strong>
+        <small data-f="meta">{p.meta}</small>
+      </div>
+    </div>
+    <div class="abas" role="tablist" aria-label="Passos">
+      {fluxo.map((f, i) => (
+        <button class="aba" role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} data-passo={i}>
+          <b>{String(i + 1).padStart(2, '0')}</b>{f.titulo.replace('.', '')}
+        </button>
+      ))}
+    </div>
+  </div>
+  <script type="application/json" data-fluxo-dados set:html={JSON.stringify(fluxo)}></script>
+</section>
+
+<script>
+  import { iniciarFluxo } from '../scripts/fluxo';
+  iniciarFluxo();
+</script>
+
+<style>
+  .palco { position: relative; height: 500px; border-radius: 20px; overflow: hidden; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .trilha { position: absolute; left: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--color-fg-faint); text-transform: uppercase; transform: translateY(-50%); }
+  .titulo { position: absolute; left: 36%; top: 0; max-width: 340px; }
+  .titulo h3 { font-size: clamp(30px, 3.6vw, 44px); }
+  .titulo p { color: var(--color-fg-dim); font-size: 14px; margin-top: 10px; }
+  .card { position: absolute; right: 0; top: 66%; transform: translateY(-50%); width: min(290px, 34%); padding: 14px 16px; border-radius: 14px; background: linear-gradient(160deg, rgb(44 48 36 / .92), rgb(22 24 18 / .95)); border: 1px solid var(--line-2); box-shadow: 0 0 0 1px rgb(0 0 0 / .4), 0 30px 60px -30px #000; }
+  .card .mono { color: var(--color-lime); display: flex; align-items: center; gap: 8px; }
+  .card .mono::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--color-lime); }
+  .card strong { display: block; font-weight: 400; font-size: 17px; margin-top: 6px; line-height: 1.3; }
+  .card small { display: block; margin-top: 10px; font-family: var(--font-mono); font-size: 10.5px; color: var(--color-fg-dim); letter-spacing: .06em; text-transform: uppercase; }
+  .abas { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--color-ink-2); border: 1px solid var(--line); width: max-content; max-width: 100%; margin: 28px auto 0; overflow-x: auto; }
+  .aba { height: 34px; padding: 0 14px; border-radius: 999px; border: 0; background: transparent; color: var(--color-fg-dim); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+  .aba[aria-selected="true"] { background: var(--color-cream); color: var(--color-cream-ink); }
+  .aba b { font-weight: 500; color: var(--color-fg-faint); margin-right: 6px; }
+  .aba[aria-selected="true"] b { color: #6f8f17; }
+  @media (max-width: 760px) {
+    .palco { height: 520px; }
+    .titulo { left: 0; right: 0; max-width: none; }
+    .card { left: 0; right: 0; width: auto; top: auto; bottom: 0; transform: none; }
+    .trilha { display: none; }
+  }
+</style>
