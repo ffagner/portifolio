@@ -49,10 +49,11 @@ export function iniciarContato() {
     return s;
   };
   const comandos: Record<string, () => (string | HTMLElement)[]> = {
-    ajuda: () => ['comandos: ', linha('cases', 'ok'), ' · ', linha('github', 'ok'), ' · ', linha('stack', 'ok'), ' · ', linha('contato', 'ok'), ' · ', linha('limpar', 'ok')],
+    ajuda: () => ['comandos: ', linha('cases', 'ok'), ' · ', linha('github', 'ok'), ' · ', linha('stack', 'ok'), ' · ', linha('sobre', 'ok'), ' · ', linha('contato', 'ok'), ' · ', linha('limpar', 'ok')],
     cases: () => { document.getElementById('cases')?.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth' }); return ['01 resultados sem vazamento\n02 gabarito em 1 segundo\n03 gestão escolar como SaaS\n04 presença e confiança']; },
     github: () => [linha(links.github.replace('https://', ''), 'ok')],
     stack: () => ['react · typescript · supabase · postgres · nestjs · firebase · recharts'],
+    sobre: () => { document.getElementById('sobre')?.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth' }); return ['fagner farias · croatá, ce\n14 anos na rede municipal · coordenador de estatística e tecnologia']; },
     contato: () => {
       document.getElementById('ct-nome')?.focus();
       const partes: (string | HTMLElement)[] = ['formulário acima, ou:'];

@@ -1,0 +1,84 @@
+---
+import { certificacoes, numeros, trajetoria } from '../data/sobre';
+import { site } from '../data/site';
+---
+<section class="sec cream" id="sobre" aria-labelledby="sobre-h">
+  <div class="wrap">
+    <div class="grade">
+      <div class="texto rv">
+        <span class="eyebrow">Sobre</span>
+        <h2 class="h-l" id="sobre-h">14 anos dentro da rede pública.<br /><span class="dim">Agora escrevendo o software dela.</span></h2>
+        <p class="intro">
+          Sou {site.nomeCompleto}, de Croatá, no interior do Ceará. Desde 2012 sou instrutor de informática na rede municipal e,
+          desde 2025, coordeno Estatística e Tecnologia na prefeitura, cuidando dos sistemas de informação que o município usa
+          com o governo federal.
+        </p>
+        <p class="intro">
+          Os produtos deste portfólio vêm desse lugar: de quem conhece por dentro a rotina da escola e da secretaria, e por isso
+          trata dado de aluno como algo que precisa ser protegido, não só exibido.
+        </p>
+        <dl class="numeros">
+          {numeros.map((n) => <div><dt>{n.rotulo}</dt><dd>{n.valor}</dd></div>)}
+        </dl>
+        <div class="links">
+          {site.linkedin && <a class="btn btn-dark" href={site.linkedin} target="_blank" rel="noopener">LinkedIn <span class="arr" aria-hidden="true">↗</span></a>}
+          <a class="btn btn-claro" href={site.github} target="_blank" rel="noopener">GitHub ↗</a>
+        </div>
+      </div>
+
+      <div class="linha rv">
+        <h3 class="mono rot">Trajetória</h3>
+        <ol class="marcos">
+          {trajetoria.map((m) => (
+            <li class:list={['marco', m.tipo, { atual: m.atual }]}>
+              <span class="ponto" aria-hidden="true"></span>
+              <span class="periodo mono">{m.periodo}</span>
+              <strong>{m.titulo}</strong>
+              <span class="onde">{m.onde}</span>
+            </li>
+          ))}
+        </ol>
+        <div class="legenda mono" aria-hidden="true"><span class="l-atual">Atual</span><span class="l-trab">Trabalho</span><span class="l-form">Formação</span></div>
+
+        <h3 class="mono rot cert-rot">Certificações</h3>
+        <ul class="certs">{certificacoes.map((c) => <li>{c}</li>)}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grade { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+  h2 { margin-top: 18px; }
+  .intro { margin-top: 20px; font-size: 17px; line-height: 1.65; color: #3c3e35; max-width: 56ch; }
+  .numeros { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 32px 0 0; padding-top: 20px; border-top: 1px solid var(--cream-line); }
+  .numeros div { display: flex; flex-direction: column; gap: 4px; }
+  .numeros dd { order: 1; margin: 0; font-size: clamp(28px, 3.2vw, 40px); letter-spacing: -.03em; color: var(--color-cream-ink); }
+  .numeros dt { order: 2; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-cream-dim); }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .btn-dark { background: var(--color-cream-ink); color: var(--color-cream); }
+  .btn-dark .arr { background: var(--color-lime); color: var(--color-cream-ink); }
+  .btn-claro { border-color: rgb(21 22 15 / .25); color: var(--color-cream-ink); padding-right: 20px; }
+  .btn-claro:hover { background: rgb(21 22 15 / .05); }
+  .rot { color: var(--color-cream-dim); font-weight: 400; margin: 0 0 16px; }
+  .marcos { list-style: none; margin: 0; padding: 0; position: relative; }
+  .marcos::before { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: rgb(21 22 15 / .18); }
+  .marco { position: relative; display: grid; gap: 2px; padding: 0 0 22px 32px; }
+  .ponto { position: absolute; left: 0; top: 4px; width: 13px; height: 13px; border-radius: 50%; background: var(--color-cream); border: 2px solid rgb(21 22 15 / .35); }
+  .marco.trabalho .ponto { background: var(--color-cream-ink); border-color: var(--color-cream-ink); }
+  .marco.atual .ponto { background: var(--color-lime); border-color: #4f6a0b; box-shadow: 0 0 0 4px rgb(205 245 100 / .35); }
+  .periodo { color: #4f6a0b; }
+  .marco strong { font-weight: 500; font-size: 16.5px; line-height: 1.3; }
+  .onde { font-size: 14px; color: var(--color-cream-dim); }
+  .legenda { display: flex; gap: 18px; color: var(--color-cream-dim); margin-top: 2px; }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .legenda span::before { content: ""; box-sizing: border-box; width: 10px; height: 10px; border-radius: 50%; }
+  .l-atual::before { background: var(--color-lime); border: 2px solid #4f6a0b; }
+  .l-trab::before { background: var(--color-cream-ink); }
+  .l-form::before { background: var(--color-cream); border: 2px solid rgb(21 22 15 / .35); }
+  .cert-rot { margin-top: 36px; }
+  .certs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .certs li { font-size: 13.5px; padding: 7px 12px; border-radius: 999px; background: var(--color-cream-2); border: 1px solid var(--cream-line); }
+  @media (max-width: 900px) { .grade { grid-template-columns: 1fr; gap: 40px; } }
+  @media (max-width: 520px) { .numeros { grid-template-columns: 1fr; gap: 14px; } }
+</style>

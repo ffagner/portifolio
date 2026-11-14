@@ -66,4 +66,6 @@ docs/                 plano.md e o protótipo original (docs/prototipo/index.htm
 - [ ] Gravar os vídeos dos produtos com dados fictícios
 - [ ] Confirmar o status de cada case (Em produção, Em desenvolvimento, Protótipo)
 
+A seção **Sobre** usa `src/data/sobre.ts` (trajetória, certificações e números, tirados do perfil do LinkedIn).
+
 O plano completo está em [`docs/plano.md`](docs/plano.md).
