@@ -71,9 +71,16 @@ export function iniciarHero() {
   })();
   if (!temWebGL) return;
 
+  // O Three.js entra depois que a página terminou de carregar e o navegador ficou ocioso,
+  // para não disputar a thread principal com a primeira pintura.
+  const quandoOcioso = (fn: () => void) => {
+    const agendar = () => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
+    if (document.readyState === 'complete') agendar();
+    else addEventListener('load', agendar, { once: true });
+  };
   let iniciado = false;
   const io = new IntersectionObserver((es) => {
-    if (es[0]?.isIntersecting && !iniciado) { iniciado = true; io.disconnect(); void montar(); }
+    if (es[0]?.isIntersecting && !iniciado) { iniciado = true; io.disconnect(); quandoOcioso(() => void montar()); }
   });
   io.observe(hero);
 
@@ -147,13 +154,18 @@ export function iniciarHero() {
     let W = 0, H = 0;
     const medir = () => {
       W = hero!.clientWidth; H = hero!.clientHeight;
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(devicePixelRatio, movel ? 1.5 : 2));
       renderer.setSize(W, H, false);
       camera.aspect = W / H;
       camera.fov = W < 760 ? 62 : 40;
       camera.updateProjectionMatrix();
     };
     medir();
+
+    // Tamanhos dos cards guardados: ler offsetWidth a cada quadro forçaria o layout.
+    let tamanhos = cards.map((c) => [c.offsetWidth, c.offsetHeight] as const);
+    const medirCards = () => { tamanhos = cards.map((c) => [c.offsetWidth, c.offsetHeight] as const); };
+    chips.forEach((b) => b.addEventListener('click', () => window.setTimeout(medirCards, 260)));
 
     const raio = new THREE.Raycaster();
     const plano = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -179,11 +191,15 @@ export function iniciarHero() {
         h.style.transform = `translate(${sx}px,${sy - haste}px)`;
         h.style.height = `${haste}px`;
         const giro = (i < 2 ? -1 : 1) * 2;
-        c.style.transform = `translate(${sx - c.offsetWidth / 2}px,${sy - haste - c.offsetHeight}px) rotate(${giro}deg)`;
+        const [cw, ch] = tamanhos[i] ?? [150, 80];
+        c.style.transform = `translate(${sx - cw / 2}px,${sy - haste - ch}px) rotate(${giro}deg)`;
       });
     };
+    // No celular, 30 quadros por segundo bastam e poupam bateria.
+    const intervalo = movel ? 1000 / 30 : 0;
     const quadro = (agora: number) => {
       if (!naTela || !abaVisivel) { rodando = false; return; }
+      if (intervalo && agora - ultimo < intervalo - 2) { requestAnimationFrame(quadro); return; }
       const dt = Math.min(0.05, (agora - ultimo) / 1000);
       ultimo = agora; t += dt;
       u.uTempo.value = t;
@@ -198,7 +214,7 @@ export function iniciarHero() {
     };
     const desenharUmaVez = () => { renderer.render(cena, camera); posicionar(); };
 
-    addEventListener('resize', () => { medir(); if (reduz) desenharUmaVez(); });
+    addEventListener('resize', () => { medir(); medirCards(); if (reduz) desenharUmaVez(); });
     if (reduz) { desenharUmaVez(); return; }
     const retomar = () => {
       if (rodando || !naTela || !abaVisivel) return;

@@ -15,13 +15,13 @@
   --color-ink-3: #262a1d;
   --color-fg: #eceee4;
   --color-fg-dim: #8d9182;
-  --color-fg-faint: #5c6053;
+  --color-fg-faint: #858a7a;
   --color-lime: #cdf564;
   --color-lime-2: #a8d63c;
   --color-cream: #f3f2ea;
   --color-cream-2: #e9e8de;
   --color-cream-ink: #15160f;
-  --color-cream-dim: #77796e;
+  --color-cream-dim: #63655a;
   --color-warn: #ff8a5c;
   --font-display: "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -142,7 +142,7 @@
 .pill { font-family: var(--font-mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em; border-radius: 999px; padding: 2px 7px; text-align: center; }
 .pill.hi { background: rgb(255 138 92 / .16); color: var(--color-warn); }
 .pill.md { background: rgb(205 245 100 / .12); color: var(--color-lime); }
-.pill.ok { background: rgb(255 255 255 / .06); color: var(--color-fg-dim); }
+.pill.ok { background: rgb(255 255 255 / .08); color: var(--color-fg); }
 
 /* ---------- prosa das páginas de case ---------- */
 .prose-case { font-size: 17px; line-height: 1.7; color: #d2d5c8; max-width: 68ch; }
